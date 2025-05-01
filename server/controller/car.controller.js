@@ -1,9 +1,11 @@
-import Car from "../models/car.model";
+import Car from "../models/car.model.js";
 
 const addCar = async (req, res) => {
     const {name, brand, model, year, carType, price, color, 
         mileage, fuelType, transmission,image, description, 
-        location,seller,sellerContact, status, features} = req.body;
+        location, sellerContact, status, features} = req.body;
+
+    const seller = req.user.id;
     try {
         if (!name || !brand || !model || !year || !carType || !price || 
             !color || !mileage || !fuelType || !transmission || !image ||
@@ -227,42 +229,105 @@ const getCarByModel = async (req, res) => {
     }
 };
 
+// const getCarByFilter = async (req, res) => {
+//     const {carType, fuelType, priceRange, brand, model} = req.body;     //priceRange is an array of two values [min, max]
+//     // if (!carType || !fuelType || !priceRange || !brand || !model) {
+//     //     return res.status(400).json({
+//     //         message: "All fields are required!"
+//     //     });
+//     // }
+
+//     if (priceRange.length !== 2) {
+//         return res.status(400).json({
+//             message: "Price range should be an array of two values!"
+//         });
+//     }
+//     try {
+//         const cars = await Car.find({
+//             fuelType: fuelType.length > 0 || !fuelType.includes("All") ? { $in: fuelType } : { $exists: true },
+//             price: { $gte: priceRange[0], $lte: priceRange[1] }, // priceRange is an array of two values [min, max]
+//             brand: brand.length > 0 || !brand.includes("All") ? { $in: brand } : { $exists: true },
+//             model: model.length > 0 || !model.includes("All") ? { $in: model } : { $exists: true },
+//             carType: carType.length > 0 || !carType.includes("All") ? { $in: carType } : { $exists: true }
+//         }).populate("seller", "name email").sort({ createdAt: -1 });
+//         if (!cars) {
+//             return res.status(400).json({
+//                 message: "No cars found!"
+//             });
+//         }
+//         res.status(200).json({
+//             message: "Cars fetched successfully",
+//             success: true,
+//             cars
+//         });
+//     } catch (error) {
+//         res.status(400).json({
+//             message: "Cars not fetched",
+//             error: error.message,
+//             success: false
+//         });
+//     }
+// };
+
 const getCarByFilter = async (req, res) => {
-    const {carType, fuelType, priceRange, brand, model} = req.body;     //priceRange is an array of two values [min, max]
-    if (!carType || !fuelType || !priceRange || !brand || !model) {
+    const { carType, fuelType, priceRange, brand, model } = req.body; // priceRange is an array of two values [min, max]
+
+    // Validate priceRange length
+    if (!Array.isArray(priceRange) || priceRange.length !== 2) {
         return res.status(400).json({
-            message: "All fields are required!"
+            message: "Price range should be an array of two values!",
         });
     }
 
-    if (priceRange.length !== 2) {
-        return res.status(400).json({
-            message: "Price range should be an array of two values!"
-        });
-    }
     try {
-        const cars = await Car.find({
-            fuelType: fuelType.length > 0 || !fuelType.includes("All") ? { $in: fuelType } : { $exists: true },
-            price: { $gte: priceRange[0], $lte: priceRange[1] }, // priceRange is an array of two values [min, max]
-            brand: brand.length > 0 || !brand.includes("All") ? { $in: brand } : { $exists: true },
-            model: model.length > 0 || !model.includes("All") ? { $in: model } : { $exists: true },
-            carType: carType.length > 0 || !carType.includes("All") ? { $in: carType } : { $exists: true }
-        }).populate("seller", "name email").sort({ createdAt: -1 });
-        if (!cars) {
+        const query = {};
+
+        // Handle carType
+        if (carType && !carType.includes("All") && carType.length > 0) {
+            query.carType = { $in: carType };
+        }
+
+        // Handle fuelType
+        if (fuelType && !fuelType.includes("All") && fuelType.length > 0) {
+            query.fuelType = { $in: fuelType };
+        }
+
+        // Handle priceRange
+        if (priceRange.length === 2) {
+            query.price = { $gte: priceRange[0], $lte: priceRange[1] };
+        }
+
+        // Handle brand
+        if (brand && !brand.includes("All") && brand.length > 0) {
+            query.brand = { $in: brand };
+        }
+
+        // Handle model
+        if (model && !model.includes("All") && model.length > 0) {
+            query.model = { $in: model };
+        }
+
+        // Fetch cars based on query
+        const cars = await Car.find(query)
+            .populate("seller", "name email")
+            .sort({ createdAt: -1 });
+
+        if (!cars || cars.length === 0) {
             return res.status(400).json({
-                message: "No cars found!"
+                message: "No cars found!",
             });
         }
+
         res.status(200).json({
             message: "Cars fetched successfully",
             success: true,
-            cars
+            cars,
         });
     } catch (error) {
         res.status(400).json({
             message: "Cars not fetched",
             error: error.message,
-            success: false
+            success: false,
         });
     }
 };
@@ -374,3 +439,18 @@ const getCarReviews = async (req, res) => {
 };
 
 
+export {
+    addCar,
+    getAllCars,
+    getCarById,
+    updateCar,
+    deleteCar,
+    getCarsBySeller,
+    getCarBycarType,
+    getCarByBrand,
+    getCarByModel,
+    getCarByFilter,
+    getCarBySearch,
+    reviewCar,
+    getCarReviews
+};    
