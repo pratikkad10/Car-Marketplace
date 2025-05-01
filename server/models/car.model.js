@@ -4,13 +4,18 @@ const carSchema = new mongoose.Schema({
   name: { type: String, required: true },
   brand: { type: String, required: true },
   model: { type: String, required: true },
-  year: { type: Number, required: true , min: 1886, max: new Date().getFullYear()+1}, // Allow next year's models
+  year: {
+    type: Number,
+    required: true,
+    min: 1886,
+    max: new Date().getFullYear() + 1
+  }, // Allow next year's models
   carType: {
     type: String,
     enum: ["SUV", "Sedan", "Sports", "Luxury", "Electric"],
     required: true
   },
-  price: { type: Number, required: true , min: 0},
+  price: { type: Number, required: true, min: 0 },
   color: { type: String, required: true },
   mileage: { type: Number, required: true, min: 0 },
   fuelType: {
@@ -27,11 +32,14 @@ const carSchema = new mongoose.Schema({
   description: { type: String, required: true },
   location: { type: String, required: true },
   seller: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+  sellerContact: { type: Number, required: true },
   status: {
     type: String,
     enum: ["available", "removed", "sold"],
     default: "available"
   },
+  features: [{ type: String, required: true }],
+  description: { type: String, required: true },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
   reviews: [
