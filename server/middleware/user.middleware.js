@@ -32,4 +32,58 @@ const isLoggedIn = async (req, res, next)=>{
     }
 }
 
-export {isLoggedIn}
+const isAdmin = async (req, res, next)=>{
+    try {
+        if(req.user.role !== "admin"){
+            return res.status(400).json({
+                success:false,
+                message:"You are not authorized!"
+            })
+        }
+        next();
+    } catch (error) {
+        return res.status(400).json({
+            success:false,
+            message:"You are not authorized!",
+            error:error.message
+        })
+    }
+};
+
+const isSeller = async (req, res, next)=>{
+    try {
+        if(req.user.role !== "seller"){
+            return res.status(400).json({
+                success:false,
+                message:"You are not authorized!"
+            })
+        }
+        next();
+    } catch (error) {
+        return res.status(400).json({
+            success:false,
+            message:"You are not authorized!",
+            error:error.message
+        })
+    }
+};
+
+const isBuyer = async (req, res, next)=>{
+    try {
+        if(req.user.role !== "buyer"){
+            return res.status(400).json({
+                success:false,
+                message:"You are not authorized!"
+            })
+        }
+        next();
+    } catch (error) {
+        return res.status(400).json({
+            success:false,
+            message:"You are not authorized!",
+            error:error.message
+        })
+    }
+};
+
+export {isLoggedIn, isAdmin, isSeller, isBuyer};
