@@ -4,7 +4,7 @@ import { isLoggedIn } from '../middleware/user.middleware.js';
 const router = express.Router();
 
 router.post('/register', register);
-router.post('/verify/:token', verifyUser);
+router.get('/verify/:token', verifyUser);
 router.post('/login', login);
 router.post('/forgotPassword', requestResetPassword);
 router.post('/reset-password/:token', resetPasssword);
