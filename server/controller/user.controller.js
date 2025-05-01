@@ -7,9 +7,9 @@ import { sendMail } from "../utils/sendMail.js";
 dotenv.config();
 
 const register = async (req, res) => {
-  const { name, email, password } = req.body;
+  const { name, email, password, role } = req.body;
   try {
-    if (!name || !email || !password) {
+    if (!name || !email || !password || !role) {
       return res.status(400).json({
         message: "All fields are required"
       });
@@ -22,7 +22,7 @@ const register = async (req, res) => {
       });
     }
 
-    const user = await User.create({ name, email, password });
+    const user = await User.create({ name, email, password, role });
     if (!user) {
       return res.status(400).json({
         message: "User not registered!"
@@ -215,7 +215,6 @@ const resetPasssword = async (req, res) => {
   }
 };
 
-
 const getMe = async (req, res) => {
   try {
       const user = await User.findById(req.user.id).select('-password'); 
@@ -228,8 +227,6 @@ const getMe = async (req, res) => {
       res.status(500).json({ error: 'Server error' });
   }
 };
-
-
 
 const logout = async (req,res,next)=>{
   try {
