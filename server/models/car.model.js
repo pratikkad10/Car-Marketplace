@@ -28,14 +28,14 @@ const carSchema = new mongoose.Schema({
     enum: ["Automatic", "Manual", "CVT", "Semi-Automatic"],
     required: true
   },
-  image: { type: String, required: true },
+  image: {type:mongoose.Schema.Types.ObjectId, ref: "Image"},
   description: { type: String, required: true },
   location: { type: String, required: true },
   seller: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   sellerContact: { type: Number, required: true },
   status: {
     type: String,
-    enum: ["available", "removed", "sold"],
+    enum: ["available",  "sold", "booked", "maintanance"],
     default: "available"
   },
   features: [{ type: String, required: true }],

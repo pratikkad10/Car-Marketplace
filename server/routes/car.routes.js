@@ -25,7 +25,7 @@ import Image from "../models/image.model.js";
 
 const carRouter = express.Router();
 
-carRouter.post("/create", isLoggedIn, isSeller, addCar);
+carRouter.post("/create", isSeller, addCar);
 carRouter.get("/", getAllCars);
 carRouter.get("/:id", isLoggedIn, getCarById);
 carRouter.put("/:id", isLoggedIn, isSeller, updateCar); //update car logic is incomplete
