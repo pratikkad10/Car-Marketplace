@@ -121,7 +121,7 @@ const login = async (req, res) => {
     const cookieOptions = {
       httpOnly: true,
       secure: true,
-      maxAge: 24 * 60 * 60 * 1000
+      expires: new Date(Date.now() + 25892000000), // 30 days
     };
     res.cookie("token", token, cookieOptions);
 
@@ -245,5 +245,7 @@ const logout = async (req,res,next)=>{
     });
   }
 }
+
+
 
 export { register, verifyUser, login, resetPasssword, requestResetPassword, getMe, logout };

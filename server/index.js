@@ -6,6 +6,7 @@ import { connectToDatabase } from './utils/db.js'
 import userRouter from './routes/user.routes.js'
 import carRouter from './routes/car.routes.js'
 
+
 dotenv.config()
 const app=express()
 connectToDatabase()
@@ -13,7 +14,7 @@ const port=process.env.PORT || 8080
 
 app.use(
     cors({
-      origin: process.env.BASE_URL,
+      origin: [process.env.BASE_URL, 'http://localhost:5173'],
       credentials: true,
       methods: ["GET", "POST", "DELETE", "OPTIONS"],
       allowedHeaders: ["Content-Type", "Authorization"],
@@ -31,3 +32,24 @@ app.get('/', (req,res)=>{
 })
 
 app.listen(port, (req,res)=> console.log(`server is listening on port ${port}`))
+
+
+// import multer from 'multer';
+// import path from 'path';
+// import { fileURLToPath } from 'url';
+// import fs from 'fs';
+
+
+// const storage = multer.diskStorage({
+//   destination: (req, file, cb) => {
+//     cb(null, '/uploads');
+//   },
+//   filename: (req, file, cb) => {
+    
+//     cb(null, Date.now() + "-" + file.originalname); // Append the file extension
+//   },
+// });
+
+// const upload = multer({
+//   storage
+// });
